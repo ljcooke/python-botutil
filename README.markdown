@@ -5,15 +5,20 @@ Small libraries for Python botmakers. Supports Python 3 and 2.7.
 
 The [twitter][pypi-twitter] package is required. Install it with:
 
-```
-pip3 install twitter
+```shell
+pip3 install twitter  # for Python 3
+# or
+pip install twitter   # for Python 2
 ```
 
 Some unit tests are provided to test the libraries with both Python 3 and
 Python 2.7. Run these with:
 
-```
+```shell
 make test
+# or
+make test_python3
+make test_python2
 ```
 
 
