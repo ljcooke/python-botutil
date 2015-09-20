@@ -1,3 +1,6 @@
+# coding: utf-8
+from __future__ import unicode_literals
+
 import os
 import unittest
 
@@ -72,6 +75,3 @@ class TestBigList(unittest.TestCase):
             'risus, tincidunt ac sem sed, laoreet eleifend lorem. Fusce '
             'quis sem ut ex malesuada facilisis. Nullam auctor sit amet '
             'orci at euismod.')
-
-if __name__ == '__main__':
-    unittest.main()

@@ -1,12 +1,19 @@
 botutil
 =======
 
-Small libraries for Python 3 botmakers.
+Small libraries for Python botmakers. Supports Python 3 and 2.7.
 
-The [twitter][pypi-twitter] package is required. Install with:
+The [twitter][pypi-twitter] package is required. Install it with:
 
 ```shell
 pip3 install twitter
+```
+
+Some unit tests are provided to test the libraries with both Python 3 and
+Python 2.7. Run these with:
+
+```shell
+make test
 ```
 
 
@@ -65,8 +72,8 @@ c.execute('UPDATE Word SET tweeted = ? WHERE id = ?', (1, 123))
 c.execute('COMMIT')
 ```
 
-It is intended for working with explicit transactions, as shown above,
-so autocommit is disabled by default.
+It's intended for working with explicit transactions, as shown above, so
+autocommit is disabled by default.
 
 
 [everywikt]: https://twitter.com/everywikt
