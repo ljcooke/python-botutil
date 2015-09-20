@@ -33,7 +33,6 @@ class TestBigList(unittest.TestCase):
         self.assertTrue(os.path.isfile(INDEX))
         self.assertEqual(old_index, new_index)
 
-
     def test_index_size(self):
         # Expecting 5 frames: 5000 lines of input, 1024 per frame
         header_size = 20

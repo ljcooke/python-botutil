@@ -5,7 +5,9 @@ Small libraries for Python 3 botmakers.
 
 The [twitter][pypi-twitter] package is required. Install with:
 
-    pip3 install twitter
+```shell
+pip3 install twitter
+```
 
 
 Twitter
@@ -15,14 +17,20 @@ Twitter
 
 Tweet a string and receive the Twitter response.
 
-By default it reads Twitter credentials from the environment variables. This
-allows you to keep API tokens out of the code. For example, you might run the
-following in the shell before running a bot script:
+```python
+tweet = botutil.post_tweet('beep boop')
+```
 
-    export TWITTER_CONSUMER_KEY="appkey"
-    export TWITTER_CONSUMER_SECRET="appsecret"
-    export TWITTER_USER_TOKEN="123456789-mytoken"
-    export TWITTER_USER_SECRET="mysecret"
+It reads Twitter credentials from environment variables. This allows you to
+keep API tokens out of the code. For example, you might run the following in
+the shell before running a bot script:
+
+```shell
+export TWITTER_CONSUMER_KEY="appkey"
+export TWITTER_CONSUMER_SECRET="appsecret"
+export TWITTER_USER_TOKEN="123456789-mytoken"
+export TWITTER_USER_SECRET="mysecret"
+```
 
 
 File access
@@ -32,6 +40,14 @@ File access
 
 This class provides fast random access to lines of text in a file.
 
+```python
+blist = BigList('lines.txt')
+
+total_lines = len(blist)
+millionth_line = blist[999999]
+last_line = blist[-1]
+```
+
 It's useful for dealing with a large number of small lines – for example,
 [@everywikt][everywikt] reads from a list of over 4&nbsp;million words, one
 per line.
@@ -39,8 +55,18 @@ per line.
 ### botutil.DB
 
 A wrapper class for working with SQLite databases.
-It disables autocommit by default.
 
+```python
+db = DB('corpus.sqlite3')
+c = db.cursor()
+
+c.execute('BEGIN')
+c.execute('UPDATE Word SET tweeted = ? WHERE id = ?', (1, 123))
+c.execute('COMMIT')
+```
+
+It is intended for working with explicit transactions, as shown above,
+so autocommit is disabled by default.
 
 
 [everywikt]: https://twitter.com/everywikt
