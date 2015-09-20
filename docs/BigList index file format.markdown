@@ -47,9 +47,15 @@ File layout
 
       * Number of lines per frame (2-byte int)
 
+          > Default: 1,024 (<code>00 04</code>)
+
       * Total number of lines (8-byte int)
 
-      * Padding (2 bytes)
+      * Separator character (1 byte)
+
+          > Default: ASCII newline (<code>0A</code>)
+
+      * Padding (1 byte)
 
   * 0 or more <i>Frame</i> objects (4 bytes each)
 

@@ -6,13 +6,17 @@ import unittest
 
 from botutil import BigList
 
+
 SOURCE = 'tests/data/words.txt'
-INDEX = 'tests/data/words.txt.index'
-
+INDEX = SOURCE + '.index'
 assert os.path.isfile(SOURCE)
-assert os.path.isfile(INDEX)
 
-class TestBigList(unittest.TestCase):
+CSV_SOURCE = 'tests/data/oneline.csv'
+CSV_INDEX = CSV_SOURCE + '.index'
+assert os.path.isfile(CSV_SOURCE)
+
+
+class TestStandardBigList(unittest.TestCase):
 
     def setUp(self):
         self.blist = BigList(SOURCE)
@@ -75,3 +79,40 @@ class TestBigList(unittest.TestCase):
             'risus, tincidunt ac sem sed, laoreet eleifend lorem. Fusce '
             'quis sem ut ex malesuada facilisis. Nullam auctor sit amet '
             'orci at euismod.')
+
+
+class TestCommaSeparated(unittest.TestCase):
+
+    def setUp(self):
+        self.blist = BigList(CSV_SOURCE, separator=b',')
+
+    def tearDown(self):
+        self.blist = None
+
+    def test_len(self):
+        self.assertEqual(len(self.blist), 4)
+
+
+class TestInvalidInitParams(unittest.TestCase):
+
+    def test_filename(self):
+        with self.assertRaises(ValueError):
+            BigList(None)
+        with self.assertRaises(ValueError):
+            BigList('')
+        with self.assertRaises(IOError):
+            BigList('invalid filename')
+
+    def test_per_frame(self):
+        with self.assertRaises(ValueError):
+            BigList(SOURCE, per_frame=0)
+        with self.assertRaises(ValueError):
+            BigList(SOURCE, per_frame=-1)
+        with self.assertRaises(ValueError):
+            BigList(SOURCE, per_frame=2 ** 16)
+
+    def test_separators(self):
+        with self.assertRaises(ValueError):
+            BigList(SOURCE, separator='')
+        with self.assertRaises(ValueError):
+            BigList(SOURCE, separator='too long')

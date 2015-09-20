@@ -25,9 +25,10 @@ import struct
 from collections import namedtuple
 
 
-MAGIC_NUMBER = b'BigList\x00'
+MAGIC_NUMBER = b'BigList\x01'
 
 DEFAULT_LINES_PER_FRAME = 1024
+DEFAULT_SEPARATOR = b'\n'
 
 
 Frame = namedtuple('Frame', ['offset', 'num_bytes'])
@@ -48,25 +49,43 @@ class BigList:
     """
     def __init__(self, filename,
                  encoding='utf-8',
-                 per_frame=DEFAULT_LINES_PER_FRAME):
+                 per_frame=DEFAULT_LINES_PER_FRAME,
+                 separator=DEFAULT_SEPARATOR):
         """
         Create a new object to read lines from a file. Will generate a separate
         index file alongside the original file.
 
-        Any encoding is acceptable as long as it separates records using an
-        ASCII newline character (0x10). To receive bytes instead of strings,
-        set the encoding to None.
+        Lines are read as UTF-8 strings. An alternative encoding may be
+        specified. To receive bytes instead of strings, set None as the
+        encoding.
 
         The per_frame parameter determines the number of lines which may be
         read into memory when retrieving a line. Smaller values will result in
         a larger index file; larger values will use more memory.
 
-        Raises BigListOutdatedException if the index file cannot be read after
-        generating it.
+        Lines are separated by an ASCII newline character. A different
+        separator may be specified, though it must be a single byte.
+
+        The following exceptions may be raised:
+
+          - ValueError for invalid input
+          - IOError if the source file does not exist
+          - BigListOutdatedException if there is a problem with parsing the
+            index file after generating it.
 
         """
+        if not filename:
+            raise ValueError('filename is required')
+        if not os.path.isfile(filename):
+            raise IOError('file not found: {}'.format(repr(filename)))
+        if not isinstance(separator, bytes) or len(separator) != 1:
+            raise ValueError('separator must be a single byte')
+        if not 0 < per_frame < 2 ** 16:
+            raise ValueError('per_frame must be a 16-bit unsigned integer > 0')
+
         self._filename = filename
         self._encoding = encoding
+        self._separator = separator
         self._index_filename = self.filename + '.index'
         self._per_frame = per_frame
         self._num_lines = 0
@@ -114,6 +133,8 @@ class BigList:
         return self._filename
 
     def _read_frame_lines(self, frame_index):
+        sep = self._separator
+
         if self._active_frame_index != frame_index:
             frame = self._frames[frame_index]
 
@@ -122,10 +143,10 @@ class BigList:
                 frame_bytes = fp.read(frame.num_bytes)
                 assert len(frame_bytes) == frame.num_bytes
 
-                if frame_bytes.endswith(b'\n'):
+                if frame_bytes.endswith(sep):
                     frame_bytes = frame_bytes[:-1]
 
-                lines = frame_bytes.split(b'\n')
+                lines = frame_bytes.split(sep)
                 logging.debug('Read {} line(s) for frame {}'
                               .format(len(lines), frame_index))
 
@@ -151,6 +172,7 @@ class BigList:
         Read the source file and generate an index file.
 
         """
+        sep = self._separator
         per_frame = self._per_frame
         total_lines = 0
         frames = []
@@ -175,7 +197,7 @@ class BigList:
                     break
                 last_char = char
 
-                if char == b'\n':
+                if char == sep:
                     frame_lines += 1
                     assert 1 <= frame_lines <= per_frame
 
@@ -189,9 +211,10 @@ class BigList:
             _, frame = pack_frame()
             if frame:
                 frames.append(frame)
-                total_lines += frame_lines + (0 if last_char == b'\n' else 1)
+                total_lines += frame_lines + (0 if last_char == sep else 1)
 
-        header = MAGIC_NUMBER + struct.pack('<HQxx', per_frame, total_lines)
+        header = MAGIC_NUMBER + struct.pack(
+            '<HQcx', per_frame, total_lines, sep)
         assert len(header) == 20
 
         with open(self._index_filename, 'wb') as fp:
@@ -200,8 +223,10 @@ class BigList:
 
     def _read_index(self):
         """
-        Read information from the index file. Raises BigListOutdatedException if
-        the index file must be regenerated.
+        Read information from the index file.
+
+        Will raise BigListOutdatedException if the index file must be
+        regenerated.
 
         """
         with open(self._index_filename, 'rb') as fp:
@@ -213,11 +238,12 @@ class BigList:
             header_bytes = fp.read(12)
             if len(header_bytes) != 12:
                 raise BigListOutdatedException
-            per_frame, num_lines = struct.unpack('<HQxx', header_bytes)
+            per_frame, num_lines, sep = struct.unpack('<HQcx', header_bytes)
             logging.debug('Lines per frame = {}'.format(per_frame))
             logging.debug('Total lines = {}'.format(num_lines))
+            logging.debug('Separator = {}'.format(repr(sep)))
 
-            if per_frame != self._per_frame:
+            if per_frame != self._per_frame or sep != self._separator:
                 raise BigListOutdatedException
 
             num_frames, last_frame_lines = divmod(num_lines, per_frame)
