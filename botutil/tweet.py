@@ -13,7 +13,7 @@ def post_tweet(text, user_token=None, user_secret=None,
     auth = twitter.OAuth(
         user_token or os.environ['TWITTER_USER_TOKEN'],
         user_secret or os.environ['TWITTER_USER_SECRET'],
-        consumer_token or os.environ['TWITTER_CONSUMER_KEY'],
+        consumer_key or os.environ['TWITTER_CONSUMER_KEY'],
         consumer_secret or os.environ['TWITTER_CONSUMER_SECRET'])
 
     t = twitter.Twitter(auth=auth)
