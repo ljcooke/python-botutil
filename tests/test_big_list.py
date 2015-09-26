@@ -83,6 +83,28 @@ class TestStandardBigList(unittest.TestCase):
         with self.assertRaises(IndexError):
             self.blist.choice(start=10, end=2)
 
+    def test_iter(self):
+        num_items, num_not_empty = 0, 0
+        first, last = None, None
+
+        for item in self.blist:
+            num_items += 1
+            if item:
+                num_not_empty += 1
+            if not first:
+                first = item
+            last = item
+
+        self.assertIsNotNone(first)
+        self.assertIsNotNone(last)
+        self.assertEqual(num_items, len(self.blist))
+        self.assertEqual(num_items, num_not_empty)
+        self.assertEqual(first, self.blist[0])
+        self.assertEqual(last, self.blist[-1])
+
+        for i, item in enumerate(self.blist):
+            self.assertEqual(item, self.blist[i])
+
     def test_relatively_long_line(self):
         self.assertEqual(
             self.blist[1999], 'Lorem ipsum dolor sit amet, consectetur '

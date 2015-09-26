@@ -129,6 +129,10 @@ class BigList:
         encoding = self._encoding
         return item.decode(encoding) if encoding else item
 
+    def __iter__(self):
+        for i in range(0, len(self)):
+            yield self[i]
+
     @property
     def filename(self):
         return self._filename
