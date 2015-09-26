@@ -58,6 +58,7 @@ blist = BigList('lines.txt')
 total_lines = len(blist)
 millionth_line = blist[999999]
 last_line = blist[-1]
+random_line = blist.choice()
 ```
 
 It's useful for dealing with a large number of small lines – for example,

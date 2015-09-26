@@ -62,6 +62,27 @@ class TestStandardBigList(unittest.TestCase):
     def test_unicode(self):
         self.assertEqual(self.blist[4970], '-λάτρης')
 
+    def test_random_selection(self):
+        self.assertTrue(self.blist.choice())
+
+        self.assertEqual(self.blist.choice(start=0, end=0),
+                         self.blist[0])
+        self.assertEqual(self.blist.choice(start=-1, end=-1),
+                         self.blist[-1])
+        self.assertNotEqual(self.blist.choice(start=1),
+                            self.blist[0])
+        self.assertNotEqual(self.blist.choice(end=-2),
+                            self.blist[-1])
+
+        self.assertEqual(self.blist.random_index(start=5, end=5), 5)
+        self.assertEqual(self.blist[self.blist.random_index(start=5, end=5)],
+                         self.blist.choice(start=5, end=5))
+
+        with self.assertRaises(IndexError):
+            self.blist.choice(start=-1, end=0)
+        with self.assertRaises(IndexError):
+            self.blist.choice(start=10, end=2)
+
     def test_relatively_long_line(self):
         self.assertEqual(
             self.blist[1999], 'Lorem ipsum dolor sit amet, consectetur '

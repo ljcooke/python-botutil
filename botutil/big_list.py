@@ -21,6 +21,7 @@ Usage example:
 """
 import logging
 import os
+import random
 import struct
 from collections import namedtuple
 
@@ -117,7 +118,7 @@ class BigList:
 
     def __getitem__(self, line_index):
         if line_index < 0:
-            line_index = self._num_lines + line_index
+            line_index += self._num_lines
         if not (0 <= line_index < self._num_lines):
             raise IndexError('list index out of range')
 
@@ -131,6 +132,33 @@ class BigList:
     @property
     def filename(self):
         return self._filename
+
+    def choice(self, start=0, end=-1):
+        """
+        Return a random string from the list.
+
+        """
+        index = self.random_index(start, end)
+        return self[index]
+
+    def random_index(self, start=0, end=-1):
+        """
+        Return a random index.
+
+        """
+        count = len(self)
+        if not count:
+            raise IndexError('no items to choose from')
+        if start < 0:
+            start += count
+        if end < 0:
+            end += count
+
+        diff = end - start + 1
+        if diff < 0:
+            raise IndexError('start is greater than end')
+
+        return random.randint(start, end)
 
     def _read_frame_lines(self, frame_index):
         sep = self._separator
