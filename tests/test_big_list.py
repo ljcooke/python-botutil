@@ -11,6 +11,10 @@ SOURCE = 'tests/data/words.txt'
 INDEX = SOURCE + '.index'
 assert os.path.isfile(SOURCE)
 
+DOS_SOURCE = 'tests/data/words-dos.txt'
+DOS_INDEX = DOS_SOURCE + '.index'
+assert os.path.isfile(DOS_SOURCE)
+
 CSV_SOURCE = 'tests/data/oneline.csv'
 CSV_INDEX = CSV_SOURCE + '.index'
 assert os.path.isfile(CSV_SOURCE)
@@ -122,6 +126,19 @@ class TestStandardBigList(unittest.TestCase):
             'risus, tincidunt ac sem sed, laoreet eleifend lorem. Fusce '
             'quis sem ut ex malesuada facilisis. Nullam auctor sit amet '
             'orci at euismod.')
+
+
+class TestDosLineEndings(unittest.TestCase):
+
+    def setUp(self):
+        self.blist = BigList(DOS_SOURCE)
+
+    def tearDown(self):
+        self.blist = None
+
+    def test_line_ending_stripped(self):
+        self.assertEqual(self.blist[0], 'page_title')
+        self.assertFalse(any('\r' in line for line in self.blist))
 
 
 class TestCommaSeparated(unittest.TestCase):

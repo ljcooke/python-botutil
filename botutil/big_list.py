@@ -126,6 +126,9 @@ class BigList:
         lines = self._read_frame_lines(frame_index)
         item = lines[index_in_frame]
 
+        if self._separator == b'\n' and item.endswith(b'\r'):
+            item = item[:-1]
+
         encoding = self._encoding
         return item.decode(encoding) if encoding else item
 
