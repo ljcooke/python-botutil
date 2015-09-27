@@ -64,8 +64,8 @@ class BigList:
         read into memory when retrieving a line. Smaller values will result in
         a larger index file; larger values will use more memory.
 
-        Lines are separated by an ASCII newline character. A different
-        separator may be specified, though it must be a single byte.
+        Lines are separated by either \\n or \\r\\n. A different separator may
+        be specified, though it must be a single byte.
 
         The following exceptions may be raised:
 
