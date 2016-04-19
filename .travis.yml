@@ -20,3 +20,16 @@ install:
 
 script:
   - coverage run -m unittest discover -s tests
+
+after_success:
+  - pip install coveralls
+  - coveralls
+
+after_script:
+  - coverage report
+  - pip install pep8 #pyflakes
+ #- pyflakes *.py | tee >(wc -l)
+  - pep8 --statistics --count *.py
+
+matrix:
+  fast_finish: true
