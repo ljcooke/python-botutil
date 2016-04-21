@@ -5,12 +5,20 @@
 language: python
 
 python:
+  - "pypy"
+  - "pypy3"
   - "2.7"
   - "3.3"
   - "3.4"
   - "3.5"
- #- "3.5-dev" # 3.5 development branch
- #- "nightly" # currently points to 3.6-dev
+  - "3.5-dev" # 3.5 development branch
+  - "nightly" # currently points to 3.6-dev
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - python: "3.5-dev"
+    - python: "nightly"
 
 install:
   - pip install -r requirements.txt
