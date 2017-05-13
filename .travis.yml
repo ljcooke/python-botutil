@@ -5,22 +5,21 @@
 language: python
 
 python:
-  - "pypy"
-  - "pypy3"
   - "2.7"
   - "3.3"
   - "3.4"
   - "3.5"
-  - "3.5-dev" # 3.5 development branch
+  - "3.6"
   - "nightly" # currently points to 3.6-dev
+  - "pypy"
+  - "pypy3"
 
 matrix:
   fast_finish: true
   allow_failures:
+    - python: "nightly"
     - python: "pypy"
     - python: "pypy3"
-    - python: "3.5-dev"
-    - python: "nightly"
 
 install:
   - pip install -r requirements.txt
@@ -35,6 +34,5 @@ after_success:
 
 after_script:
   - coverage report
-  - pip install pep8 #pyflakes
- #- pyflakes *.py | tee >(wc -l)
+  - pip install pep8
   - pep8 --statistics --count *.py
