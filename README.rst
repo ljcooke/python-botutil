@@ -1,11 +1,13 @@
 botutil
 =======
 
-.. image:: https://travis-ci.org/araile/python-botutil.svg?branch=master
-    :target: https://travis-ci.org/araile/python-botutil
+**This project is no longer maintained.**
 
-.. image:: https://coveralls.io/repos/github/araile/python-botutil/badge.svg?branch=master
-    :target: https://coveralls.io/github/araile/python-botutil
+.. .. image:: https://travis-ci.org/araile/python-botutil.svg?branch=master
+..     :target: https://travis-ci.org/araile/python-botutil
+
+.. .. image:: https://coveralls.io/repos/github/araile/python-botutil/badge.svg?branch=master
+..     :target: https://coveralls.io/github/araile/python-botutil
 
 Small libraries for Python botmakers. Supports Python 3 and 2.7.
 
